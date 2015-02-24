@@ -7,15 +7,6 @@ class SwitchUserController < ApplicationController
     redirect_to(SwitchUser.redirect_path.call(request, params))
   end
 
-  def remember_user
-    # NOOP unless the user has explicity enabled this feature
-    if SwitchUser.switch_back
-      provider.remember_current_user(params[:remember] == "true")
-    end
-
-    redirect_to(SwitchUser.redirect_path.call(request, params))
-  end
-
   private
 
   def developer_modes_only
@@ -27,6 +18,10 @@ class SwitchUserController < ApplicationController
   end
 
   def handle_request(params)
+    if SwitchUser.switch_back
+      provider.remember_current_user(params[:remember] == "true")
+    end
+
     if params[:scope_identifier].blank?
       provider.logout_all
     else
