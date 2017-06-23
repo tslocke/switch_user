@@ -3,8 +3,13 @@ class SwitchUserController < ApplicationController
 
   def set_current_user
     handle_request(params)
-
-    redirect_to(SwitchUser.redirect_path.call(request, params))
+    
+    to = SwitchUser.redirect_path.call(request, params)
+    if to == :back
+      redirect_back(fallback_location: root_path)
+    else
+      redirect_to(to)
+    end
   end
 
   private
